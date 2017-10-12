@@ -89,12 +89,12 @@ struct MCMF { // O(max_flow * augment)
             for (int at = t; at != s; at = parent[at]) { // Find bottleneck.
                 int p = parent[at]; // If you want min cost flow (not max flow)
                 bottle = min(bottle, revcaps[p][at] == 0 // keep sum of edge costs in this loop
-                    || costs[p][at] < revcosts[p][at] ? caps[p][at] : revcaps[p][at]);
+                    || (caps[p][at] > 0 && costs[p][at] < revcosts[p][at]) ? caps[p][at] : revcaps[p][at]);
             } // then if the sum is > 0, break
             flow += bottle;
             for (int at = t; at != s; at = parent[at]) { // Push the flow.
                 int p = parent[at];
-                if (revcaps[p][at] == 0 || costs[p][at] < revcosts[p][at]) {
+                if (revcaps[p][at] == 0 || (caps[p][at] > 0 && costs[p][at] < revcosts[p][at])) {
                     fcost += costs[p][at]*bottle;
                     caps[p][at] -= bottle; revcaps[at][p] += bottle;
                 } else {
